@@ -6,22 +6,19 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField;
-import javafx.scene.image.WritableImage;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
 
-import javax.imageio.ImageWriter;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 // TODO: save as image -- maybe see canvas.snapshot();
-// TODO: variable angularVelocity
-// TODO: validation on parameter input from textboxes
+// TODO: validation on parameter input from text-boxes
 
 
 public class RenderWindow extends Application
@@ -64,9 +61,14 @@ public class RenderWindow extends Application
         ColorPicker colourPicker = new ColorPicker();
         colourPicker.setValue(Color.RED);
 
+        Slider velocitySlider = new Slider();
+        velocitySlider.setMin(1);
+        velocitySlider.setMax(30);
+        velocitySlider.setValue(10);
+
         Button btnRun = new Button();
         btnRun.setText("New Hypercycloid");
-        btnRun.setOnAction(new EventHandler<ActionEvent>()
+        btnRun.setOnAction(new EventHandler<>()
         {
             @Override
             public void handle(ActionEvent event)
@@ -76,10 +78,9 @@ public class RenderWindow extends Application
             }
         });
 
-
         Button btnClear = new Button();
         btnClear.setText("Clear");
-        btnClear.setOnAction(new EventHandler<ActionEvent>()
+        btnClear.setOnAction(new EventHandler<>()
         {
             @Override
             public void handle(ActionEvent event)
@@ -91,9 +92,23 @@ public class RenderWindow extends Application
             }
         });
 
+
+        Button btnRandom = new Button();
+        btnRandom.setText("Generate a random curve");
+        btnRandom.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                Random rnd = new Random();
+                hypocycloids.add(new Hypocycloid(rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200), colourPicker.getValue(), theta, graphics));
+
+            }
+        });
+
+
         VBox rightColumn = new VBox();
         rightColumn.setSpacing(15);
-        rightColumn.getChildren().addAll(RBox, rBox, OBox, colourPicker, btnRun, btnClear);
+        rightColumn.getChildren().addAll(RBox, rBox, OBox, colourPicker, velocitySlider, btnRun, btnClear, btnRandom);
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
@@ -102,20 +117,21 @@ public class RenderWindow extends Application
         Scene scene = new Scene(hbox);
         primaryStage.setScene(scene);
 
-        //long startTime = System.nanoTime();
         new AnimationTimer()
         {
             @Override
             public void handle(long now)
             {
-                //double t = (now - startTime) / 1000000000.0;
+                angularVelocity = velocitySlider.getValue() / 10.0;
+
                 for (Hypocycloid hypocycloid : hypocycloids)
                 {
                     hypocycloid.paint(theta);
                 }
+
                 if (hypocycloids.size() > 0)
                 {
-                    theta += Math.PI / 100 * angularVelocity;
+                    theta += (Math.PI / 100) * angularVelocity;
                 }
             }
         }.start();
