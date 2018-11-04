@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -14,12 +15,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
 
+import javax.imageio.ImageWriter;
 import java.util.ArrayList;
 
 
-// TODO: save as image
+// TODO: save as image -- maybe see canvas.snapshot();
 // TODO: variable angularVelocity
-// TODO: validation on parameter input from textboxes 
+// TODO: validation on parameter input from textboxes
 
 
 public class RenderWindow extends Application
@@ -30,7 +32,7 @@ public class RenderWindow extends Application
     private static final float HALF_HEIGHT = HEIGHT / 2.0f;
     private ArrayList<Hypocycloid> hypocycloids = new ArrayList<>();
     private double theta = 0.0;
-    //private double speed = 0.001;
+    private double angularVelocity = 1;
 
     public static void main(String[] args)
     {
@@ -47,32 +49,17 @@ public class RenderWindow extends Application
         graphics.setFill(Color.WHITE);
         graphics.fillRect(-HALF_WIDTH, -HALF_HEIGHT, WIDTH, HEIGHT);
 
-        HBox Rbox = new HBox();
-        Rbox.setSpacing(10);
-        Text txtR = new Text();
-        txtR.setText("R:");
-        TextField txtBoxR = new TextField();
-        txtBoxR.setPromptText("R");
-        txtBoxR.setText("200");
-        Rbox.getChildren().addAll(txtR, txtBoxR);
+        InputBox RBox = new InputBox();
+        RBox.setLabelText("R:");
+        RBox.setInitialValue("200");
 
-        HBox rbox = new HBox();
-        rbox.setSpacing(10);
-        Text txtr = new Text();
-        txtr.setText("r:");
-        TextField txtBoxr = new TextField();
-        txtBoxr.setPromptText("r");
-        txtBoxr.setText("70");
-        rbox.getChildren().addAll(txtr, txtBoxr);
+        InputBox rBox = new InputBox();
+        rBox.setLabelText("r:");
+        rBox.setInitialValue("70");
 
-        HBox Obox = new HBox();
-        Obox.setSpacing(10);
-        Text txtO = new Text();
-        txtO.setText("O:");
-        TextField txtBoxO = new TextField();
-        txtBoxO.setPromptText("O");
-        txtBoxO.setText("50");
-        Obox.getChildren().addAll(txtO, txtBoxO);
+        InputBox OBox = new InputBox();
+        OBox.setLabelText("O:");
+        OBox.setInitialValue("50");
 
         ColorPicker colourPicker = new ColorPicker();
         colourPicker.setValue(Color.RED);
@@ -84,9 +71,11 @@ public class RenderWindow extends Application
             @Override
             public void handle(ActionEvent event)
             {
-                hypocycloids.add(new Hypocycloid(Double.valueOf(txtBoxR.getText()), Double.valueOf(txtBoxr.getText()), Double.valueOf(txtBoxO.getText()), colourPicker.getValue(), theta, graphics));
+                hypocycloids.add(new Hypocycloid(RBox.getValueAsDouble(), rBox.getValueAsDouble(), OBox.getValueAsDouble(),
+                        colourPicker.getValue(), theta, graphics));
             }
         });
+
 
         Button btnClear = new Button();
         btnClear.setText("Clear");
@@ -104,7 +93,7 @@ public class RenderWindow extends Application
 
         VBox rightColumn = new VBox();
         rightColumn.setSpacing(15);
-        rightColumn.getChildren().addAll(Rbox, rbox, Obox, colourPicker, btnRun, btnClear);
+        rightColumn.getChildren().addAll(RBox, rBox, OBox, colourPicker, btnRun, btnClear);
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
@@ -126,7 +115,7 @@ public class RenderWindow extends Application
                 }
                 if (hypocycloids.size() > 0)
                 {
-                    theta += Math.PI / 100;
+                    theta += Math.PI / 100 * angularVelocity;
                 }
             }
         }.start();

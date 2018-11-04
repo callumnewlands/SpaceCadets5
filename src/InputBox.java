@@ -18,12 +18,21 @@ public class InputBox extends HBox
 
     public void setLabelText(String str)
     {
-        label.setText(str);
+        this.label.setText(str);
     }
 
     public void setInitialValue(String str)
     {
-        textBox.setText(str);
+        this.textBox.setText(str);
     }
 
+    public String getValue()
+    {
+        return this.textBox.getText();
+    }
+
+    public Double getValueAsDouble()
+    {
+        return Double.valueOf(this.getValue());
+    }
 }
