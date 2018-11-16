@@ -2,8 +2,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-
-
 class InputBox extends HBox
 {
 
