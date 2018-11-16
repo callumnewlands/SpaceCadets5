@@ -39,7 +39,7 @@ public class RenderWindow extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        Canvas canvas = new Canvas(WIDTH, HEIGHT);
+        Canvas canvas = new Canvas(WIDTH, 500);
         GraphicsContext graphics = canvas.getGraphicsContext2D();
         graphics.translate(HALF_WIDTH, HALF_HEIGHT);
 

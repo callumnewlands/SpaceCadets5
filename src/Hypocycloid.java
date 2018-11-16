@@ -37,5 +37,4 @@ class Hypocycloid
         this.x = newX;
         this.y = newY;
     }
-
 }
